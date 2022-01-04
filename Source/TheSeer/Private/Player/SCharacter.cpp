@@ -33,6 +33,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &ASCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnAround", this, &ASCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
+	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetFirstWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::FirstWorld);
+	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetSecondWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::SecondWorld);
+	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetThirdWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::ThirdWorld);
+	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetFourthWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::FourthWorld);
+	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetFifthWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::FifthWorld);
 }
 
 void ASCharacter::MoveForward(float Amount)
@@ -45,4 +50,11 @@ void ASCharacter::MoveRight(float Amount)
 {
 	if (FMath::IsNearlyZero(Amount)) return;
 	AddMovementInput(GetActorRightVector(), Amount);
+}
+
+void ASCharacter::SetWorldMode(WorldModes Mode)
+{
+	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (!GameMode) return;
+	GameMode->SetWorldMode(Mode);
 }

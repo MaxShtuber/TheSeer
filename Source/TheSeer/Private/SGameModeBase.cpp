@@ -8,4 +8,13 @@ ASGameModeBase::ASGameModeBase()
 {
 	DefaultPawnClass = ASCharacter::StaticClass();
 	PlayerControllerClass = ASPlayerController::StaticClass();
+	SetWorldMode(WorldModes::FirstWorld);
+}
+
+void ASGameModeBase::SetWorldMode(const WorldModes& Mode)
+{
+	if (Mode == CurrentWorldMode) return;
+
+	CurrentWorldMode = Mode;
+	OnChangeWorldMode.Broadcast(CurrentWorldMode);
 }
