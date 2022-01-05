@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "SGameModeBase.h"
 #include "SCharacter.generated.h"
 
 class UCameraComponent;
+
+DECLARE_DELEGATE_OneParam(FInputSwitchWorldModeSignature, WorldModes);
 
 UCLASS()
 class THESEER_API ASCharacter : public ACharacter
@@ -28,4 +31,7 @@ protected:
 private:
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
+
+	UFUNCTION()
+	void SetWorldMode(WorldModes Mode);
 };
