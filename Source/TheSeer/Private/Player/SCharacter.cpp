@@ -57,9 +57,18 @@ void ASCharacter::MoveRight(float Amount)
 
 void ASCharacter::SetWorldMode(WorldModes Mode)
 {
+	if (!bCanSetWorld) return;
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
-	if (!GameMode) return;
+	if (!GameMode || GameMode->GetWorldMode() == Mode) return;
 	GameMode->SetWorldMode(Mode);
+	bCanSetWorld = false;
+	GetWorld()->GetTimerManager().SetTimer(SetWorldTimerHandler, this, &ASCharacter::ChangeSetWorld, SetWorldTime);
+}
+
+void ASCharacter::ChangeSetWorld()
+{
+	bCanSetWorld = true;
+	GetWorld()->GetTimerManager().ClearTimer(SetWorldTimerHandler);
 }
 
 void ASCharacter::OnStartInteract()
