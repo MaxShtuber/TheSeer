@@ -25,21 +25,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* ThirdWorldMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* FourthWorldMesh;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* FifthWorldMesh;
-
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	virtual void ChangeCurrentMesh(WorldModes Mode);
 
 private:
 	TMap <WorldModes, UStaticMeshComponent*> Meshes;
 	UStaticMeshComponent* CurrentMesh = nullptr;
+	bool bIsMeshChangeable = false;
 
 	void TurnOffMesh(UStaticMeshComponent* Mesh);
 	void TurnOnMesh(UStaticMeshComponent* Mesh);
 
-	UFUNCTION()
-	void ChangeCurrentMesh(WorldModes Mode);
 };

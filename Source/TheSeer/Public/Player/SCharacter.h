@@ -8,6 +8,7 @@
 #include "SCharacter.generated.h"
 
 class UCameraComponent;
+class ABaseChangeableActor;
 
 DECLARE_DELEGATE_OneParam(FInputSwitchWorldModeSignature, WorldModes);
 
@@ -29,9 +30,19 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	bool bWantsToInteract = false;
+	TArray<ABaseChangeableActor*> OverlapedActors;
+
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
+	void OnStartInteract();
 
 	UFUNCTION()
 	void SetWorldMode(WorldModes Mode);
+
+	UFUNCTION()
+	void OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	UFUNCTION()
+	void OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 };
