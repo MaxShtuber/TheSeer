@@ -27,11 +27,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* CameraComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Timer")
+	float SetWorldTime = 3.0f;
+
 	virtual void BeginPlay() override;
 
 private:
 	bool bWantsToInteract = false;
+	bool bCanSetWorld = true;
 	TArray<ABaseChangeableActor*> OverlapedActors;
+	FTimerHandle SetWorldTimerHandler;
 
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
@@ -45,4 +50,7 @@ private:
 
 	UFUNCTION()
 	void OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	UFUNCTION()
+	void ChangeSetWorld();
 };

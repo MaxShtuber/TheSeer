@@ -29,6 +29,7 @@ public:
 	FOnChangeWorldModeSignature OnChangeWorldMode;
 
 	void SetWorldMode(const WorldModes& Mode);
+	WorldModes GetWorldMode() const { return CurrentWorldMode; };
 
 private:
 	WorldModes CurrentWorldMode = WorldModes::FirstWorld;
