@@ -12,15 +12,9 @@ ABaseTerrainActor::ABaseTerrainActor()
 	SecondWorldMesh->SetupAttachment(FirstWorldMesh);
 	ThirdWorldMesh = CreateDefaultSubobject<UStaticMeshComponent>("ThirdWorldMesh");
 	ThirdWorldMesh->SetupAttachment(FirstWorldMesh);
-	FourthWorldMesh = CreateDefaultSubobject<UStaticMeshComponent>("FourthWorldMesh");
-	FourthWorldMesh->SetupAttachment(FirstWorldMesh);
-	FifthWorldMesh = CreateDefaultSubobject<UStaticMeshComponent>("FifthWorldMesh");
-	FifthWorldMesh->SetupAttachment(FirstWorldMesh);
 	Meshes.Add(WorldModes::FirstWorld, FirstWorldMesh);
 	Meshes.Add(WorldModes::SecondWorld, SecondWorldMesh);
 	Meshes.Add(WorldModes::ThirdWorld, ThirdWorldMesh);
-	Meshes.Add(WorldModes::FourthWorld, FourthWorldMesh);
-	Meshes.Add(WorldModes::FifthWorld, FifthWorldMesh);
 
 }
 

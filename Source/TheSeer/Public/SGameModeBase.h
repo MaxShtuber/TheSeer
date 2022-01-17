@@ -13,9 +13,7 @@ enum class WorldModes : uint8
 {
 	FirstWorld = 0,
 	SecondWorld,
-	ThirdWorld,
-	FourthWorld,
-	FifthWorld
+	ThirdWorld
 };
 
 /**
