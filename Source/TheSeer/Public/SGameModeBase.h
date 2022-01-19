@@ -30,6 +30,11 @@ public:
 
 	void SetWorldMode(const WorldModes& Mode);
 	WorldModes GetWorldMode() const { return CurrentWorldMode; };
+	FName GetMainLevelName() const { return MainLevel; };
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
+	FName MainLevel = "MainLevel";
 
 private:
 	WorldModes CurrentWorldMode = WorldModes::FirstWorld;
