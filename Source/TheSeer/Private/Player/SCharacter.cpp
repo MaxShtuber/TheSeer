@@ -4,6 +4,8 @@
 #include "Camera/CameraComponent.h"
 #include "Dev/BaseChangeableActor.h"
 #include "Components/TextRenderComponent.h"
+#include "NiagaraComponent.h"
+#include "Particles/ParticleSystem.h"
 
 ASCharacter::ASCharacter()
 {
@@ -12,6 +14,8 @@ ASCharacter::ASCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(GetRootComponent());
 	CameraComponent->bUsePawnControlRotation = true;
+	ChangeWorldEffect = CreateDefaultSubobject<UNiagaraComponent>("ChangeWorldEffect");
+	ChangeWorldEffect->SetupAttachment(CameraComponent);
 }
 
 void ASCharacter::BeginPlay()
@@ -20,6 +24,8 @@ void ASCharacter::BeginPlay()
 
 	this->OnActorBeginOverlap.AddDynamic(this, &ASCharacter::OnBeginOverlap);
 	this->OnActorEndOverlap.AddDynamic(this, &ASCharacter::OnEndOverlap);
+	ChangeWorldEffect->AutoAttachScaleRule = EAttachmentRule::SnapToTarget;
+	ChangeWorldEffect->Deactivate();
 }
 
 void ASCharacter::Tick(float DeltaTime)
@@ -60,7 +66,10 @@ void ASCharacter::SetWorldMode(WorldModes Mode)
 	if (!bCanSetWorld) return;
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode || GameMode->GetWorldMode() == Mode) return;
+
 	GameMode->SetWorldMode(Mode);
+	ChangeWorldEffect->Activate();
+
 	bCanSetWorld = false;
 	GetWorld()->GetTimerManager().SetTimer(SetWorldTimerHandler, this, &ASCharacter::ChangeSetWorld, SetWorldTime);
 }

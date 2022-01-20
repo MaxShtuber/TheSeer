@@ -9,6 +9,7 @@
 
 class UCameraComponent;
 class ABaseChangeableActor;
+class UNiagaraComponent;
 
 DECLARE_DELEGATE_OneParam(FInputSwitchWorldModeSignature, WorldModes);
 
@@ -27,8 +28,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* CameraComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UNiagaraComponent* ChangeWorldEffect;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Timer")
 	float SetWorldTime = 3.0f;
+
+
 
 	virtual void BeginPlay() override;
 
