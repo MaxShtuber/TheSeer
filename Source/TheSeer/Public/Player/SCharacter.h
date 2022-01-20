@@ -41,6 +41,7 @@ private:
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 	void OnStartInteract();
+	void PauseGame();
 
 	UFUNCTION()
 	void SetWorldMode(WorldModes Mode);

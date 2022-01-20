@@ -19,6 +19,8 @@ void USMainMenuWidget::OpenLevel()
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 
 	UGameplayStatics::OpenLevel(GetWorld(), GameMode->GetMainLevelName());
+	GetOwningPlayer()->SetInputMode(FInputModeGameOnly::FInputModeGameOnly());
+	GetOwningPlayer()->SetShowMouseCursor(false);
 }
 
 void USMainMenuWidget::ExitLevel()

@@ -40,7 +40,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetSecondWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::SecondWorld);
 	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetThirdWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::ThirdWorld);
 	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &ASCharacter::OnStartInteract);
-
+	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &ASCharacter::PauseGame);
 }
 
 void ASCharacter::MoveForward(float Amount)
@@ -98,4 +98,14 @@ void ASCharacter::OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	if (!Actor) return;
 	Actor->TextComponent->SetVisibility(false);
 	OverlapedActors.RemoveAt(OverlapedActors.Find(Actor));
+}
+
+void ASCharacter::PauseGame()
+{
+	const auto PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController) return;
+	PlayerController->SetShowMouseCursor(true);
+	PlayerController->SetPause(true);
+	PlayerController->SetInputMode(FInputModeUIOnly::FInputModeUIOnly());
+	
 }
