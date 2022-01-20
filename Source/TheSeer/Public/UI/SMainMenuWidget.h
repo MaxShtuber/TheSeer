@@ -23,12 +23,12 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ExitButton;
 
+	UFUNCTION()
+	virtual void OpenLevel();
+
+	UFUNCTION()
+	virtual void ExitLevel();
+
 	virtual void NativeOnInitialized() override;
 
-private:
-	UFUNCTION()
-	void OpenLevel();
-
-	UFUNCTION()
-	void ExitLevel();
 };
