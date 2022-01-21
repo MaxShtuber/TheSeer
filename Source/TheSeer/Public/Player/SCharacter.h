@@ -8,6 +8,7 @@
 #include "SCharacter.generated.h"
 
 class UCameraComponent;
+class USpringArmComponent;
 class ABaseChangeableActor;
 class UNiagaraComponent;
 
@@ -26,6 +27,9 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* CameraComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -34,7 +38,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Timer")
 	float SetWorldTime = 3.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Object")
+	float RangeOfTakenObject = 1000.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Object")
+	FName AttachObjectSocketName = TEXT("AttachObjectSocket");
 
 	virtual void BeginPlay() override;
 
@@ -42,12 +50,15 @@ private:
 	bool bWantsToInteract = false;
 	bool bCanSetWorld = true;
 	TArray<ABaseChangeableActor*> OverlapedActors;
+	ABaseChangeableActor* CurrentTakenActor = nullptr;
 	FTimerHandle SetWorldTimerHandler;
 
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 	void OnStartInteract();
 	void PauseGame();
+	void TakeObject();
+	void DropObject();
 
 	UFUNCTION()
 	void SetWorldMode(WorldModes Mode);
