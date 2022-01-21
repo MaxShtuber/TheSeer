@@ -2,17 +2,21 @@
 
 #include "Player/SCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "GameFrameWork/SpringArmComponent.h"
 #include "Dev/BaseChangeableActor.h"
 #include "Components/TextRenderComponent.h"
 #include "NiagaraComponent.h"
 #include "Particles/ParticleSystem.h"
+#include "DrawDebugHelpers.h"
 
 ASCharacter::ASCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	SpringArmComponent->SetupAttachment(GetRootComponent());
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-	CameraComponent->SetupAttachment(GetRootComponent());
+	CameraComponent->SetupAttachment(SpringArmComponent);
 	CameraComponent->bUsePawnControlRotation = true;
 	ChangeWorldEffect = CreateDefaultSubobject<UNiagaraComponent>("ChangeWorldEffect");
 	ChangeWorldEffect->SetupAttachment(CameraComponent);
@@ -24,7 +28,7 @@ void ASCharacter::BeginPlay()
 
 	this->OnActorBeginOverlap.AddDynamic(this, &ASCharacter::OnBeginOverlap);
 	this->OnActorEndOverlap.AddDynamic(this, &ASCharacter::OnEndOverlap);
-	ChangeWorldEffect->AutoAttachScaleRule = EAttachmentRule::SnapToTarget;
+	ChangeWorldEffect->AutoAttachScaleRule = EAttachmentRule::KeepRelative;
 	ChangeWorldEffect->Deactivate();
 }
 
@@ -47,6 +51,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetThirdWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::ThirdWorld);
 	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &ASCharacter::OnStartInteract);
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &ASCharacter::PauseGame);
+	PlayerInputComponent->BindAction("TakeObject", IE_Pressed, this, &ASCharacter::TakeObject);
+	PlayerInputComponent->BindAction("DropObject", IE_Pressed, this, &ASCharacter::DropObject);
 }
 
 void ASCharacter::MoveForward(float Amount)
@@ -117,4 +123,41 @@ void ASCharacter::PauseGame()
 	PlayerController->SetPause(true);
 	PlayerController->SetInputMode(FInputModeUIOnly::FInputModeUIOnly());
 	
+}
+
+void ASCharacter::TakeObject()
+{
+	if (CurrentTakenActor) return;
+	FVector Location;
+	FRotator Rotation;
+	Controller->GetPlayerViewPoint(Location, Rotation);
+
+	const auto StartPoint = Location;
+	const auto Direction = Rotation.Vector();
+	const auto EndPoint = StartPoint + RangeOfTakenObject * Direction;
+	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red, false, 2.0f, 0, 3.0f);
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility, CollisionParams);
+
+	if (!HitResult.bBlockingHit) return;
+
+	const auto HittedObject = Cast<ABaseChangeableActor>(HitResult.GetActor());
+	if (!HittedObject) return;
+
+	CurrentTakenActor = HittedObject;
+	const auto AttachmentRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
+	CurrentTakenActor->AttachToComponent(GetMesh(), AttachmentRules, AttachObjectSocketName);
+	CurrentTakenActor->SetMeshChangeable(false);
+}
+
+void ASCharacter::DropObject()
+{
+	if (!CurrentTakenActor) return;
+
+	const auto DetachmentRules = FDetachmentTransformRules::KeepWorldTransform;
+	CurrentTakenActor->DetachFromActor(DetachmentRules);
+	CurrentTakenActor->SetMeshChangeable(true);
+	CurrentTakenActor = nullptr;
 }
