@@ -53,6 +53,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &ASCharacter::PauseGame);
 	PlayerInputComponent->BindAction("TakeObject", IE_Pressed, this, &ASCharacter::TakeObject);
 	PlayerInputComponent->BindAction("DropObject", IE_Pressed, this, &ASCharacter::DropObject);
+	PlayerInputComponent->BindAction("OpenJournal", IE_Pressed, this, &ASCharacter::OnOpenJournal);
 }
 
 void ASCharacter::MoveForward(float Amount)
@@ -160,4 +161,13 @@ void ASCharacter::DropObject()
 	CurrentTakenActor->DetachFromActor(DetachmentRules);
 	CurrentTakenActor->SetMeshChangeable(true);
 	CurrentTakenActor = nullptr;
+}
+
+void ASCharacter::OnOpenJournal()
+{
+	const auto PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController) return;
+	OnJournalOpen.Broadcast();
+	PlayerController->SetShowMouseCursor(true);
+	PlayerController->SetInputMode(FInputModeUIOnly::FInputModeUIOnly());
 }
