@@ -3,6 +3,8 @@
 #include "SGameModeBase.h"
 #include "Player/SCharacter.h"
 #include "Player/SPlayerController.h"
+#include "UObject/UObjectIterator.h"
+#include "UI/SIconPageWidget.h"
 
 ASGameModeBase::ASGameModeBase()
 {
@@ -17,4 +19,13 @@ void ASGameModeBase::SetWorldMode(const WorldModes& Mode)
 
 	CurrentWorldMode = Mode;
 	OnChangeWorldMode.Broadcast(CurrentWorldMode);
+
+}
+
+void ASGameModeBase::OnTakenPage(int Number)
+{
+	for (TObjectIterator<USIconPageWidget> Iterator; Iterator; ++Iterator)
+	{
+		Iterator->OnTakenPage(Number);
+	}
 }

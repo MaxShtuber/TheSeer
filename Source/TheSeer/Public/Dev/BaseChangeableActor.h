@@ -25,10 +25,7 @@ public:
 	UTextRenderComponent* TextComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Text")
-	FText ActivateDescription = FText::FromString(TEXT("Press E to stabilize this object"));
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Text")
-	FText DeactivateDescription = FText::FromString(TEXT("Object stabilized. Press E to destabilize"));
+	FText ActivateDescription = FText::FromString(TEXT("Press E to pick object"));
 
 protected:
 

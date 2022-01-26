@@ -29,6 +29,7 @@ public:
 	FOnChangeWorldModeSignature OnChangeWorldMode;
 
 	void SetWorldMode(const WorldModes& Mode);
+	void OnTakenPage(int Number);
 	WorldModes GetWorldMode() const { return CurrentWorldMode; };
 	FName GetMainLevelName() const { return MainLevel; };
 	FName GetMainMenuLevelName() const { return MainMenuLevel; };
@@ -46,5 +47,4 @@ protected:
 
 private:
 	WorldModes CurrentWorldMode = WorldModes::FirstWorld;
-
 };
