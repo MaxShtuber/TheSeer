@@ -13,6 +13,7 @@ class ABaseChangeableActor;
 class UNiagaraComponent;
 
 DECLARE_DELEGATE_OneParam(FInputSwitchWorldModeSignature, WorldModes);
+DECLARE_MULTICAST_DELEGATE(FOnJournalOpenSignature);
 
 UCLASS()
 class THESEER_API ASCharacter : public ACharacter
@@ -21,6 +22,8 @@ class THESEER_API ASCharacter : public ACharacter
 
 public:
 	ASCharacter();
+
+	FOnJournalOpenSignature OnJournalOpen;
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -59,6 +62,7 @@ private:
 	void PauseGame();
 	void TakeObject();
 	void DropObject();
+	void OnOpenJournal();
 
 	UFUNCTION()
 	void SetWorldMode(WorldModes Mode);
