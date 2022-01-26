@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFrameWork/SpringArmComponent.h"
 #include "Dev/BaseChangeableActor.h"
+#include "Dev/BasePageActor.h"
 #include "Components/TextRenderComponent.h"
 #include "NiagaraComponent.h"
 #include "Particles/ParticleSystem.h"
@@ -89,14 +90,25 @@ void ASCharacter::ChangeSetWorld()
 
 void ASCharacter::OnStartInteract()
 {
-	if (OverlapedActors.Num() == 0) return;
-	for (auto OverlapedActor : OverlapedActors)
-	{
-		if (!OverlapedActor) continue;
-		OverlapedActor->SetMeshChangeable(OverlapedActor->GetMeshChangeable() ? false : true);
-		auto ChangeTextCondition = (OverlapedActor->TextComponent->Text).ToString() == OverlapedActor->ActivateDescription.ToString();
-		OverlapedActor->TextComponent->SetText(ChangeTextCondition ? OverlapedActor->DeactivateDescription : OverlapedActor->ActivateDescription);
-	}
+	FVector Location;
+	FRotator Rotation;
+	Controller->GetPlayerViewPoint(Location, Rotation);
+
+	const auto StartPoint = Location;
+	const auto Direction = Rotation.Vector();
+	const auto EndPoint = StartPoint + RangeOfTakenObject * Direction;
+	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red, false, 2.0f, 0, 3.0f);
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility, CollisionParams);
+
+	if (!HitResult.bBlockingHit) return;
+
+	const auto HittedObject = Cast<ABasePageActor>(HitResult.GetActor());
+	if (!HittedObject) return;
+	HittedObject->OnStartInteract();
+
 }
 
 void ASCharacter::OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)

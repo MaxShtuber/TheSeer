@@ -35,14 +35,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int PageNumber = 0;
 
+	UFUNCTION(BlueprintCallable)
+	void OnTakenPage(int Number);
+
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	bool IsLocked = true;
 
-protected:
-	virtual void NativeOnInitialized() override;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Images")
 	TMap<int, UTexture2D*> LockImages;
+
+	virtual void NativeOnInitialized() override;
 
 private:
 	UFUNCTION()

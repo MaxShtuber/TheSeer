@@ -17,3 +17,10 @@ void USIconPageWidget::OpenPage()
 	if (IsLocked) return;
 	OnOpenIconPage.Broadcast(PageNumber);
 }
+
+void USIconPageWidget::OnTakenPage(int Number)
+{
+	if (Number != PageNumber) return;
+	IsLocked = false;
+	IconPageImage->SetBrushFromTexture(*LockImages.Find(1));
+}
