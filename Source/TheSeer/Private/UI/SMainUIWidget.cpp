@@ -12,9 +12,9 @@ void USMainUIWidget::NativeOnInitialized()
 
 	InitializeFrames();
 	InitializeChangeDelegate();
-	int CurrentScrolls = 0;
-	int MaxLevelScrolls = 4;
-	SubGoalText->SetText(FText::FromString(FString::Printf(TEXT("%i / %i"), CurrentScrolls, MaxLevelScrolls)));
+	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (!GameMode) return;
+	SubGoalText->SetText(FText::FromString(FString::Printf(TEXT("%i / %i"), GameMode->GetCurrentJournalPagesOnLevel(), GameMode->GetMaxJournalPagesOnLevel())));
 }
 
 void USMainUIWidget::OnChangeWorldMode(WorldModes GameMode)
@@ -53,4 +53,18 @@ void USMainUIWidget::InitializeChangeDelegate()
 	if (!GameMode) return;
 
 	GameMode->OnChangeWorldMode.AddUObject(this, &USMainUIWidget::OnChangeWorldMode);
+}
+
+void USMainUIWidget::OnTakenPage()
+{
+	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (!GameMode) return;
+	const auto CurrentPages = GameMode->GetCurrentJournalPagesOnLevel();
+	const auto MaxPagesOnLevel = GameMode->GetMaxJournalPagesOnLevel();
+	if (CurrentPages == MaxPagesOnLevel)
+	{
+		SubGoalText->SetText(FText::FromString(FString::Printf(TEXT("%i / %i - Completed"), CurrentPages, MaxPagesOnLevel)));
+		return;
+	}
+	SubGoalText->SetText(FText::FromString(FString::Printf(TEXT("%i / %i"), CurrentPages, MaxPagesOnLevel)));
 }

@@ -22,6 +22,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Widgets")
 	float GetCurrentTimeRecoveryPercent() const { return CurrentTimeRecoveryPercent; };
 
+	void OnTakenPage();
+
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UImage* FirstWorldFrame;

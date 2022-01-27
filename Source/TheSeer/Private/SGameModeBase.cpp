@@ -5,6 +5,7 @@
 #include "Player/SPlayerController.h"
 #include "UObject/UObjectIterator.h"
 #include "UI/SIconPageWidget.h"
+#include "UI/SMainUIWidget.h"
 
 ASGameModeBase::ASGameModeBase()
 {
@@ -27,5 +28,10 @@ void ASGameModeBase::OnTakenPage(int Number)
 	for (TObjectIterator<USIconPageWidget> Iterator; Iterator; ++Iterator)
 	{
 		Iterator->OnTakenPage(Number);
+	}
+	++CurrentJournalPagesOnLevel;
+	for (TObjectIterator<USMainUIWidget> Iterator; Iterator; ++Iterator)
+	{
+		Iterator->OnTakenPage();
 	}
 }
