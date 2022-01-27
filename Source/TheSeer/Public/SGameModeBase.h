@@ -34,6 +34,8 @@ public:
 	FName GetMainLevelName() const { return MainLevel; };
 	FName GetMainMenuLevelName() const { return MainMenuLevel; };
 	int32 GetMaxJournalPages() const { return MaxJournalPages; };
+	int32 GetMaxJournalPagesOnLevel() const { return MaxJournalPagesOnLevel; };
+	int32 GetCurrentJournalPagesOnLevel() const { return CurrentJournalPagesOnLevel; };
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
@@ -45,6 +47,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Journal")
 	int32 MaxJournalPages = 16;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Journal")
+	int32 MaxJournalPagesOnLevel = 4;
+
 private:
 	WorldModes CurrentWorldMode = WorldModes::FirstWorld;
+	int32 CurrentJournalPagesOnLevel = 0;
 };
