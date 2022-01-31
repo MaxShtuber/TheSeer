@@ -27,8 +27,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Text")
 	FText ActivateDescription = FText::FromString(TEXT("Press E to pick object"));
 
+	void EnableCurrentMeshPhysics() const;
+
+	
+	void DisableCurrentMeshPhysics();
+
 protected:
 
+	UFUNCTION()
+	void DisableCurrentMeshPhysicsCallback(UPrimitiveComponent* Comp, FName BoneName)
+	{
+		DisableCurrentMeshPhysics();
+	}
+	
 	void ChangeCurrentMesh(WorldModes Mode) override;
 
 	virtual void BeginPlay() override;

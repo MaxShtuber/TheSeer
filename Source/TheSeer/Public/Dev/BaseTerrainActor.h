@@ -30,6 +30,16 @@ protected:
 	UFUNCTION()
 	virtual void ChangeCurrentMesh(WorldModes Mode);
 
+	UStaticMeshComponent* GetCurrentMesh() const
+	{
+		return CurrentMesh;
+	}
+
+	TMap<WorldModes, UStaticMeshComponent*> GetMeshes() const
+	{
+		return Meshes;
+	}
+
 private:
 	TMap <WorldModes, UStaticMeshComponent*> Meshes;
 	UStaticMeshComponent* CurrentMesh = nullptr;
