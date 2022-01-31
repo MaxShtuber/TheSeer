@@ -13,6 +13,14 @@ void ABaseChangeableActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	for (auto mesh : GetMeshes())
+	{
+		mesh.Value->BodyInstance.bGenerateWakeEvents = true;
+		mesh.Value->OnComponentSleep.AddDynamic(
+			this, &ABaseChangeableActor::ABaseChangeableActor::DisableCurrentMeshPhysicsCallback);
+		
+	}
+
 	TextComponent->SetText(ActivateDescription);
 	TextComponent->SetVisibility(false);
 }
@@ -20,6 +28,22 @@ void ABaseChangeableActor::BeginPlay()
 void ABaseChangeableActor::SetMeshChangeable(bool NewMeshChangeable)
 {
 	bIsMeshChangeable = NewMeshChangeable;
+}
+
+void ABaseChangeableActor::EnableCurrentMeshPhysics() const
+{
+	if(IsValid(GetCurrentMesh()))
+	{
+		GetCurrentMesh()->SetSimulatePhysics(true);
+	}
+}
+
+void ABaseChangeableActor::DisableCurrentMeshPhysics()
+{
+	if(IsValid(GetCurrentMesh()))
+	{
+		GetCurrentMesh()->SetSimulatePhysics(false);
+	}
 }
 
 void ABaseChangeableActor::ChangeCurrentMesh(WorldModes Mode)
