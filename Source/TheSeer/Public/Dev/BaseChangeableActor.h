@@ -27,8 +27,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Text")
 	FText ActivateDescription = FText::FromString(TEXT("Press E to pick object"));
 
-	void EnableCurrentMeshPhysics() const;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag")
+	int32 TagItem = 0;
 
+	void EnableCurrentMeshPhysics() const;
 	
 	void DisableCurrentMeshPhysics();
 
