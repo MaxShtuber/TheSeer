@@ -25,17 +25,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* ThirdWorldMesh;
 
+	UStaticMeshComponent* CurrentMesh = nullptr;
+
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	virtual void ChangeCurrentMesh(WorldModes Mode);
 
-private:
-	TMap <WorldModes, UStaticMeshComponent*> Meshes;
-	UStaticMeshComponent* CurrentMesh = nullptr;
-	bool bIsMeshChangeable = false;
-
 	void TurnOffMesh(UStaticMeshComponent* Mesh);
 	void TurnOnMesh(UStaticMeshComponent* Mesh);
 
+private:
+	TMap <WorldModes, UStaticMeshComponent*> Meshes;
+	bool bIsMeshChangeable = false;
 };
