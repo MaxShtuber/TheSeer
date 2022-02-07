@@ -11,24 +11,24 @@ UCLASS()
 class THESEER_API ABaseTerrainActor : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ABaseTerrainActor();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* FirstWorldMesh;
+		UStaticMeshComponent* FirstWorldMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* SecondWorldMesh;
+		UStaticMeshComponent* SecondWorldMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* ThirdWorldMesh;
+		UStaticMeshComponent* ThirdWorldMesh;
 
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	virtual void ChangeCurrentMesh(WorldModes Mode);
+		virtual void ChangeCurrentMesh(WorldModes Mode);
 
 	UStaticMeshComponent* GetCurrentMesh() const
 	{
@@ -42,6 +42,10 @@ protected:
 
 	void TurnOffMesh(UStaticMeshComponent* Mesh);
 	void TurnOnMesh(UStaticMeshComponent* Mesh);
+	void SetCurrentMesh(UStaticMeshComponent* Mesh)
+	{
+		CurrentMesh = Mesh;
+	}
   
 private:
 	TMap <WorldModes, UStaticMeshComponent*> Meshes;

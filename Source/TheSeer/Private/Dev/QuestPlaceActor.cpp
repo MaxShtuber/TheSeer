@@ -14,17 +14,17 @@ void AQuestPlaceActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (CurrentMesh)
+	if (GetCurrentMesh())
 	{
-		TurnOffMesh(CurrentMesh);
+		TurnOffMesh(GetCurrentMesh());
 	}
-	CurrentMesh = SignalMesh;
+	SetCurrentMesh(SignalMesh);
 }
 
 void AQuestPlaceActor::ChangeCurrentMesh(WorldModes Mode)
 {
 	if (!bIsChangeableActorPlacedInside) return;
-	TurnOffMesh(CurrentMesh);
+	TurnOffMesh(GetCurrentMesh());
 	Super::ChangeCurrentMesh(Mode);
 }
 
