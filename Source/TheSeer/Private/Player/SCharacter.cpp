@@ -172,6 +172,7 @@ void ASCharacter::TakeObject()
 	if (!HittedObject) return;
 
 	CurrentTakenActor = HittedObject;
+	CurrentTakenActor->DisableCurrentMeshPhysics();
 	const auto AttachmentRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
 	CurrentTakenActor->AttachToComponent(GetMesh(), AttachmentRules, AttachObjectSocketName);
 	CurrentTakenActor->SetMeshChangeable(false);
@@ -184,7 +185,9 @@ void ASCharacter::DropObject()
 	const auto DetachmentRules = FDetachmentTransformRules::KeepWorldTransform;
 	CurrentTakenActor->DetachFromActor(DetachmentRules);
 	CurrentTakenActor->SetMeshChangeable(true);
+	CurrentTakenActor->EnableCurrentMeshPhysics();
 	CurrentTakenActor = nullptr;
+	
 }
 
 void ASCharacter::OnOpenJournal()
