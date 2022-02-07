@@ -113,9 +113,8 @@ void ASCharacter::OnStartInteract()
 		return;
 	}
 	const auto HittedPlaceObject = Cast<AQuestPlaceActor>(HitResult.GetActor());
-	if (HittedPlaceObject && HittedPlaceObject->CanInteract())
+	if (HittedPlaceObject && HittedPlaceObject->CanInteract() && CurrentTakenActor && CurrentTakenActor->TagItem == HittedPlaceObject->TagItem)
 	{
-		if (!CurrentTakenActor) return;
 		CurrentTakenActor->Destroy();
 		CurrentTakenActor = nullptr;
 		HittedPlaceObject->OnStartInteract();

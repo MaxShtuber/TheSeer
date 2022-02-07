@@ -16,6 +16,9 @@ class THESEER_API AQuestPlaceActor : public ABaseTerrainActor
 public:
 	AQuestPlaceActor();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag")
+	int32 TagItem = 0;
+
 	void SetChangeableActorPlacedInside(bool NewValue);
 	void OnStartInteract();
 	bool CanInteract() const { return !bIsChangeableActorPlacedInside; };
