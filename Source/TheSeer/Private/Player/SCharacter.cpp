@@ -5,6 +5,7 @@
 #include "GameFrameWork/SpringArmComponent.h"
 #include "Dev/BaseChangeableActor.h"
 #include "Dev/BasePageActor.h"
+#include "Dev/QuestPlaceActor.h"
 #include "Components/TextRenderComponent.h"
 #include "NiagaraComponent.h"
 #include "Particles/ParticleSystem.h"
@@ -105,10 +106,21 @@ void ASCharacter::OnStartInteract()
 
 	if (!HitResult.bBlockingHit) return;
 
-	const auto HittedObject = Cast<ABasePageActor>(HitResult.GetActor());
-	if (!HittedObject) return;
-	HittedObject->OnStartInteract();
-
+	const auto HittedPageObject = Cast<ABasePageActor>(HitResult.GetActor());
+	if (HittedPageObject)
+	{
+		HittedPageObject->OnStartInteract();
+		return;
+	}
+	const auto HittedPlaceObject = Cast<AQuestPlaceActor>(HitResult.GetActor());
+	if (HittedPlaceObject && HittedPlaceObject->CanInteract())
+	{
+		if (!CurrentTakenActor) return;
+		CurrentTakenActor->Destroy();
+		CurrentTakenActor = nullptr;
+		HittedPlaceObject->OnStartInteract();
+		return;
+	}
 }
 
 void ASCharacter::OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
