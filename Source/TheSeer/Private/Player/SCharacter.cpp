@@ -10,6 +10,8 @@
 #include "NiagaraComponent.h"
 #include "Particles/ParticleSystem.h"
 #include "DrawDebugHelpers.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 ASCharacter::ASCharacter()
 {
@@ -48,6 +50,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &ASCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnAround", this, &ASCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ASCharacter::StartSprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASCharacter::StopSprint);
 	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetFirstWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::FirstWorld);
 	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetSecondWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::SecondWorld);
 	PlayerInputComponent->BindAction<FInputSwitchWorldModeSignature>("SetThirdWorld", IE_Pressed, this, &ASCharacter::SetWorldMode, WorldModes::ThirdWorld);
@@ -120,6 +124,16 @@ void ASCharacter::OnStartInteract()
 		HittedPlaceObject->OnStartInteract();
 		return;
 	}
+}
+
+void ASCharacter::StartSprint()
+{
+	StaticCast<UCharacterMovementComponent*>(GetMovementComponent())->MaxWalkSpeed = SprintSpeed;
+}
+
+void ASCharacter::StopSprint()
+{
+	StaticCast<UCharacterMovementComponent*>(GetMovementComponent())->MaxWalkSpeed = WalkSpeed;
 }
 
 void ASCharacter::OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
