@@ -25,6 +25,12 @@ public:
 
 	FOnJournalOpenSignature OnJournalOpen;
 
+	UPROPERTY(EditAnywhere)
+	float WalkSpeed = 300;
+
+	UPROPERTY(EditAnywhere)
+	float SprintSpeed = 600;
+
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -59,6 +65,8 @@ private:
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 	void OnStartInteract();
+	void StartSprint();
+	void StopSprint();
 	void PauseGame();
 	void TakeObject();
 	void DropObject();
