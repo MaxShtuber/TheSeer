@@ -35,7 +35,7 @@ void ABaseTerrainActor::BeginPlay()
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
-		GameMode->OnChangeWorldMode.AddUObject(this, &ABaseTerrainActor::ChangeCurrentMesh);
+		GameMode->OnChangeWorldMode.AddDynamic(this, &ABaseTerrainActor::ChangeCurrentMesh);
 	}
 }
 

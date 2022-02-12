@@ -52,7 +52,7 @@ void USMainUIWidget::InitializeChangeDelegate()
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode) return;
 
-	GameMode->OnChangeWorldMode.AddUObject(this, &USMainUIWidget::OnChangeWorldMode);
+	GameMode->OnChangeWorldMode.AddDynamic(this, &USMainUIWidget::OnChangeWorldMode);
 }
 
 void USMainUIWidget::OnTakenPage()
