@@ -16,9 +16,9 @@ void ABaseChangeableActor::BeginPlay()
 	for (auto mesh : GetMeshes())
 	{
 		mesh.Value->BodyInstance.bGenerateWakeEvents = true;
+		mesh.Value->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		mesh.Value->OnComponentSleep.AddDynamic(
 			this, &ABaseChangeableActor::ABaseChangeableActor::DisableCurrentMeshPhysicsCallback);
-		
 	}
 
 	TextComponent->SetText(ActivateDescription);
