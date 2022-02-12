@@ -25,6 +25,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		UStaticMeshComponent* ThirdWorldMesh;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USceneComponent* Root;
+
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
@@ -40,8 +43,8 @@ protected:
 		return Meshes;
 	}
 
-	void TurnOffMesh(UStaticMeshComponent* Mesh);
-	void TurnOnMesh(UStaticMeshComponent* Mesh);
+	void virtual TurnOffMesh(UStaticMeshComponent* Mesh);
+	void virtual TurnOnMesh(UStaticMeshComponent* Mesh);
 	void SetCurrentMesh(UStaticMeshComponent* Mesh)
 	{
 		CurrentMesh = Mesh;
