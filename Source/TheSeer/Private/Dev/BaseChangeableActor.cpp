@@ -12,15 +12,12 @@ ABaseChangeableActor::ABaseChangeableActor()
 void ABaseChangeableActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	for (auto mesh : GetMeshes())
-	{
-		mesh.Value->BodyInstance.bGenerateWakeEvents = true;
-		mesh.Value->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-		mesh.Value->OnComponentSleep.AddDynamic(
+	auto RootComponent_ = StaticCast<UStaticMeshComponent*>(GetRootComponent());
+	RootComponent_->SetMobility(EComponentMobility::Movable);
+	RootComponent_->BodyInstance.bGenerateWakeEvents = true;
+	RootComponent_->OnComponentSleep.AddDynamic(
 			this, &ABaseChangeableActor::ABaseChangeableActor::DisableCurrentMeshPhysicsCallback);
-	}
-
+	RootComponent_->SetCollisionProfileName("ChangeableObject");
 	TextComponent->SetText(ActivateDescription);
 	TextComponent->SetVisibility(false);
 }
@@ -32,18 +29,44 @@ void ABaseChangeableActor::SetMeshChangeable(bool NewMeshChangeable)
 
 void ABaseChangeableActor::EnableCurrentMeshPhysics() const
 {
-	if(IsValid(GetCurrentMesh()))
+	auto RootComponent_ = StaticCast<UStaticMeshComponent*>(GetRootComponent());
+	if(IsValid(RootComponent_))
 	{
-		GetCurrentMesh()->SetSimulatePhysics(true);
+		for (auto Mesh: GetMeshes())
+		{
+			Mesh.Value->SetActive(false);
+		}
+		RootComponent_->SetStaticMesh(GetCurrentMesh()->GetStaticMesh());
+		RootComponent_->SetSimulatePhysics(true);
+		RootComponent_->SetVisibility(true);
+
 	}
 }
 
 void ABaseChangeableActor::DisableCurrentMeshPhysics()
 {
-	if(IsValid(GetCurrentMesh()))
+	auto RootComponent_ = StaticCast<UStaticMeshComponent*>(GetRootComponent());
+	if(IsValid(RootComponent_))
 	{
-		GetCurrentMesh()->SetSimulatePhysics(false);
+		RootComponent_->SetSimulatePhysics(false);
+		RootComponent_->SetVisibility(false);
+		for (auto Mesh: GetMeshes())
+		{
+			Mesh.Value->SetActive(true);
+		}
 	}
+}
+
+void ABaseChangeableActor::TurnOnMesh(UStaticMeshComponent* Mesh)
+{
+	Super::TurnOnMesh(Mesh);
+	Mesh->SetCollisionProfileName("ChangeableObject");
+}
+
+void ABaseChangeableActor::TurnOffMesh(UStaticMeshComponent* Mesh)
+{
+	Super::TurnOffMesh(Mesh);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseChangeableActor::ChangeCurrentMesh(WorldModes Mode)
