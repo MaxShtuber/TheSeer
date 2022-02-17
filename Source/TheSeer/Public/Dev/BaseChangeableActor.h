@@ -41,6 +41,8 @@ protected:
 	{
 		DisableCurrentMeshPhysics();
 	}
+	virtual void TurnOnMesh(UStaticMeshComponent* Mesh) override;
+	virtual  void TurnOffMesh(UStaticMeshComponent* Mesh) override;
 	
 	void ChangeCurrentMesh(WorldModes Mode) override;
 
