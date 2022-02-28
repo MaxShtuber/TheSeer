@@ -6,6 +6,7 @@
 #include "Dev/BaseChangeableActor.h"
 #include "Dev/BasePageActor.h"
 #include "Dev/QuestPlaceActor.h"
+#include "Dev/BaseRuneActor.h"
 #include "Components/TextRenderComponent.h"
 #include "NiagaraComponent.h"
 #include "Particles/ParticleSystem.h"
@@ -79,7 +80,7 @@ void ASCharacter::SetWorldMode(WorldModes Mode)
 	if (!bCanSetWorld) return;
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode || GameMode->GetWorldMode() == Mode) return;
-
+	if (!GameMode->CanWorldChange(Mode)) return;
 	GameMode->SetWorldMode(Mode);
 	ChangeWorldEffect->Activate();
 
@@ -116,12 +117,20 @@ void ASCharacter::OnStartInteract()
 		HittedPageObject->OnStartInteract();
 		return;
 	}
+
 	const auto HittedPlaceObject = Cast<AQuestPlaceActor>(HitResult.GetActor());
 	if (HittedPlaceObject && HittedPlaceObject->CanInteract() && CurrentTakenActor && CurrentTakenActor->TagItem == HittedPlaceObject->TagItem)
 	{
 		CurrentTakenActor->Destroy();
 		CurrentTakenActor = nullptr;
 		HittedPlaceObject->OnStartInteract();
+		return;
+	}
+
+	const auto HittedRuneObject = Cast<ABaseRuneActor>(HitResult.GetActor());
+	if (HittedRuneObject)
+	{
+		HittedRuneObject->OnStartInteract();
 		return;
 	}
 }

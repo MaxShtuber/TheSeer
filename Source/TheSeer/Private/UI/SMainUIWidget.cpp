@@ -38,8 +38,8 @@ void USMainUIWidget::RecoveryTimerUpdate()
 
 void USMainUIWidget::InitializeFrames()
 {
-	CurrentWorldFrame = FirstWorldFrame;
-	SecondWorldFrame->SetVisibility(ESlateVisibility::Hidden);
+	CurrentWorldFrame = SecondWorldFrame;
+	FirstWorldFrame->SetVisibility(ESlateVisibility::Hidden);
 	ThirdWorldFrame->SetVisibility(ESlateVisibility::Hidden);
 
 	WorldFrames.Add(WorldModes::FirstWorld, FirstWorldFrame);

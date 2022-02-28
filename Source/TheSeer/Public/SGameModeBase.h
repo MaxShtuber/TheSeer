@@ -31,6 +31,9 @@ public:
 
 	void SetWorldMode(const WorldModes& Mode);
 	void OnTakenPage(int Number);
+	void AddTakenRune(WorldModes& Mode);
+	
+	bool CanWorldChange(WorldModes& Mode);
 
 	UFUNCTION(BlueprintCallable)
 	WorldModes GetWorldMode() const { return CurrentWorldMode; };
@@ -57,4 +60,7 @@ protected:
 private:
 	WorldModes CurrentWorldMode = WorldModes::FirstWorld;
 	int32 CurrentJournalPagesOnLevel = 0;
+	TArray<WorldModes> CurrentTakenRunes;
+
+	bool FindInArray(WorldModes& Mode);
 };

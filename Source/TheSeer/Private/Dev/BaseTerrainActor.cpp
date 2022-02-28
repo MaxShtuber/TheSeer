@@ -5,16 +5,16 @@
 ABaseTerrainActor::ABaseTerrainActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	Root = CreateDefaultSubobject<UStaticMeshComponent>("Root");
+	Root = CreateDefaultSubobject<UStaticMeshComponent>("RootComponent");
 	SetRootComponent(Root);
 	Root->SetVisibility(false);
 	Root->SetMobility(EComponentMobility::Static);
 	FirstWorldMesh = CreateDefaultSubobject<UStaticMeshComponent>("FirstWorldMesh");
-	FirstWorldMesh->SetupAttachment(Root);
+	FirstWorldMesh->SetupAttachment(GetRootComponent());
 	SecondWorldMesh = CreateDefaultSubobject<UStaticMeshComponent>("SecondWorldMesh");
-	SecondWorldMesh->SetupAttachment(Root);
+	SecondWorldMesh->SetupAttachment(GetRootComponent());
 	ThirdWorldMesh = CreateDefaultSubobject<UStaticMeshComponent>("ThirdWorldMesh");
-	ThirdWorldMesh->SetupAttachment(Root);
+	ThirdWorldMesh->SetupAttachment(GetRootComponent());
 	Meshes.Add(WorldModes::FirstWorld, FirstWorldMesh);
 	Meshes.Add(WorldModes::SecondWorld, SecondWorldMesh);
 	Meshes.Add(WorldModes::ThirdWorld, ThirdWorldMesh);
