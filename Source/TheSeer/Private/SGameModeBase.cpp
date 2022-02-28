@@ -11,7 +11,7 @@ ASGameModeBase::ASGameModeBase()
 {
 	DefaultPawnClass = ASCharacter::StaticClass();
 	PlayerControllerClass = ASPlayerController::StaticClass();
-	SetWorldMode(WorldModes::FirstWorld);
+	SetWorldMode(WorldModes::SecondWorld);
 }
 
 void ASGameModeBase::SetWorldMode(const WorldModes& Mode)
@@ -34,4 +34,26 @@ void ASGameModeBase::OnTakenPage(int Number)
 	{
 		Iterator->OnTakenPage();
 	}
+}
+
+void ASGameModeBase::AddTakenRune(WorldModes& Mode)
+{
+	if (FindInArray(Mode)) return;
+	CurrentTakenRunes.Add(Mode);
+}
+
+bool ASGameModeBase::CanWorldChange(WorldModes& Mode)
+{
+	if (FindInArray(Mode)) return true;
+	return false;
+}
+
+bool ASGameModeBase::FindInArray(WorldModes& Mode)
+{
+	if (CurrentTakenRunes.Num() == 0) return false;
+	for (auto Rune : CurrentTakenRunes)
+	{
+		if (Rune == Mode) return true;
+	}
+	return false;
 }
