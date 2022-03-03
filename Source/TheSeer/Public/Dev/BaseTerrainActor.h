@@ -26,7 +26,7 @@ protected:
 		UStaticMeshComponent* ThirdWorldMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	USceneComponent* Root;
+	USceneComponent* Root = nullptr;
 
 	virtual void BeginPlay() override;
 
