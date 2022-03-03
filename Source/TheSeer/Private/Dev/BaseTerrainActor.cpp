@@ -5,7 +5,7 @@
 ABaseTerrainActor::ABaseTerrainActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	Root = CreateDefaultSubobject<UStaticMeshComponent>("RootComponent");
+	Root = CreateDefaultSubobject<USceneComponent>("RootComponent");
 	SetRootComponent(Root);
 	Root->SetVisibility(false);
 	Root->SetMobility(EComponentMobility::Static);
