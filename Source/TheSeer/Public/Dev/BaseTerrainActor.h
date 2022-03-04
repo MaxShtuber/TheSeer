@@ -17,16 +17,16 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		UStaticMeshComponent* FirstWorldMesh;
+	UStaticMeshComponent* FirstWorldMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		UStaticMeshComponent* SecondWorldMesh;
+	UStaticMeshComponent* SecondWorldMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		UStaticMeshComponent* ThirdWorldMesh;
+	UStaticMeshComponent* ThirdWorldMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	USceneComponent* Root = nullptr;
+	USceneComponent* Root;
 
 	virtual void BeginPlay() override;
 
