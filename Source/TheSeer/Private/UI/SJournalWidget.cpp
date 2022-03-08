@@ -2,7 +2,7 @@
 
 #include "UI/SJournalWidget.h"
 #include "Components/Button.h"
-#include "Components/WrapBox.h"
+#include "Components/ScrollBox.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "SGameModeBase.h"
@@ -49,7 +49,7 @@ void USJournalWidget::InitializeDelegates()
 		OnePage->PageNumber = i;
 		OnePage->IconPageText->SetText(FText::FromString(FString::Printf(TEXT("%i"), i+1)));
 		OnePage->OnOpenIconPage.AddUObject(this, &USJournalWidget::OpenPage);
-		GridPages->AddChildToWrapBox(OnePage);
+		GridPages->AddChild(OnePage);
 	}
 
 }
