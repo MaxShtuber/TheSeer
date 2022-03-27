@@ -9,7 +9,7 @@ void USIconPageWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	IconPageButton->OnClicked.AddDynamic(this, &USIconPageWidget::OpenPage);
-	IconPageImage->SetBrushFromTexture(*LockImages.Find(0));
+	IconPageButton->SetColorAndOpacity(FLinearColor::Black);
 }
 
 void USIconPageWidget::OpenPage()
@@ -22,5 +22,6 @@ void USIconPageWidget::OnTakenPage(int Number)
 {
 	if (Number != PageNumber) return;
 	IsLocked = false;
-	IconPageImage->SetBrushFromTexture(*LockImages.Find(1));
+	IconPageButton->SetColorAndOpacity(FLinearColor::White);
+	IconPageButton->SetRenderOpacity(1.0f);
 }

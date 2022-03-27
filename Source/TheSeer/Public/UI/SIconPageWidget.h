@@ -27,9 +27,6 @@ public:
 	UButton* IconPageButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UImage* IconPageImage;
-
-	UPROPERTY(meta = (BindWidget))
 	UTextBlock* IconPageText;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -41,9 +38,6 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	bool IsLocked = true;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Images")
-	TMap<int, UTexture2D*> LockImages;
 
 	virtual void NativeOnInitialized() override;
 
