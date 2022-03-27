@@ -121,6 +121,11 @@ void ASCharacter::OnStartInteract()
 	const auto HittedPlaceObject = Cast<AQuestPlaceActor>(HitResult.GetActor());
 	if (HittedPlaceObject && HittedPlaceObject->CanInteract() && CurrentTakenActor && CurrentTakenActor->TagItem == HittedPlaceObject->TagItem)
 	{
+		const auto DetachmentRules = FDetachmentTransformRules::KeepWorldTransform;
+		CurrentTakenActor->DetachFromActor(DetachmentRules);
+		CurrentTakenActor->SetMeshChangeable(true);
+		CurrentTakenActor->EnableCurrentMeshPhysics();
+
 		CurrentTakenActor->Destroy();
 		CurrentTakenActor = nullptr;
 		HittedPlaceObject->OnStartInteract();
@@ -133,6 +138,7 @@ void ASCharacter::OnStartInteract()
 		HittedRuneObject->OnStartInteract();
 		return;
 	}
+
 }
 
 void ASCharacter::StartSprint()
