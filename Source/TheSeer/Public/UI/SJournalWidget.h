@@ -7,7 +7,7 @@
 #include "SJournalWidget.generated.h"
 
 class UButton;
-class UWrapBox;
+class UScrollBox;
 class UImage;
 class USIconPageWidget;
 class UTexture2D;
@@ -24,7 +24,7 @@ protected:
 	UButton* ExitButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UWrapBox* GridPages;
+	UScrollBox* GridPages;
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* CoreImage;
