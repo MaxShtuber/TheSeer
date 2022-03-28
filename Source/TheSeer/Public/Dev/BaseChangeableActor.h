@@ -25,7 +25,7 @@ public:
 	UTextRenderComponent* TextComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Text")
-	FText ActivateDescription = FText::FromString(TEXT("Press E to pick object"));
+	FText ActivateDescription = FText::FromString(TEXT("Press LKM to pick object/RKM to drop object"));
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag")
 	int32 TagItem = 0;
