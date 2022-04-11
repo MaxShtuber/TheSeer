@@ -8,7 +8,7 @@ ABaseRuneActor::ABaseRuneActor()
 	RuneMesh = CreateDefaultSubobject<UStaticMeshComponent>("RuneMesh");
 }
 
-void ABaseRuneActor::OnStartInteract()
+void ABaseRuneActor::OnStartInteract_Implementation()
 {
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode) return;

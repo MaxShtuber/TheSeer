@@ -30,11 +30,15 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float SprintSpeed = 600;
-
+	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	AActor* Checkpoint;
+
 protected:
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
 

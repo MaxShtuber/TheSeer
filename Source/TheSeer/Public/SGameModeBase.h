@@ -9,7 +9,8 @@
 UENUM(BlueprintType, Blueprintable)
 enum class WorldModes : uint8
 {
-	FirstWorld = 0,
+	None = 0,
+	FirstWorld,
 	SecondWorld,
 	ThirdWorld
 };

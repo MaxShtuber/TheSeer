@@ -19,6 +19,16 @@ UCLASS()
 class THESEER_API USJournalWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* OpenSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* CloseSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<USoundBase*> PageSounds;
+
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ExitButton;

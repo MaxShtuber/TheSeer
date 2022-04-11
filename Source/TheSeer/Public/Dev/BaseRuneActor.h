@@ -14,7 +14,9 @@ class THESEER_API ABaseRuneActor : public AActor
 public:
 	ABaseRuneActor();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void OnStartInteract();
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* RuneMesh;
