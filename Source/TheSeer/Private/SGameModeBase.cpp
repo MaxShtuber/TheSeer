@@ -40,6 +40,7 @@ void ASGameModeBase::AddTakenRune(WorldModes& Mode)
 {
 	if (FindInArray(Mode)) return;
 	CurrentTakenRunes.Add(Mode);
+	OnRuneTake.Broadcast(Mode);
 }
 
 bool ASGameModeBase::CanWorldChange(WorldModes& Mode)

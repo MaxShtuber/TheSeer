@@ -16,6 +16,7 @@ enum class WorldModes : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeWorldModeSignature, WorldModes, mode);
+DECLARE_EVENT_OneParam(FOnChangeWorldModeSignature, FMode, WorldModes)
 
 /**
  * 
@@ -29,6 +30,9 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnChangeWorldModeSignature OnChangeWorldMode;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnChangeWorldModeSignature OnRuneTake;
 
 	void SetWorldMode(const WorldModes& Mode);
 	void OnTakenPage(int Number);

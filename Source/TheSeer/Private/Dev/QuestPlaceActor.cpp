@@ -41,4 +41,8 @@ void AQuestPlaceActor::OnStartInteract()
 
 	SetChangeableActorPlacedInside(true);
 	ChangeCurrentMesh(GameMode->GetWorldMode());
+	if(OnStartInteractEvent.IsBound())
+	{
+		OnStartInteractEvent.Broadcast();
+	}
 }
