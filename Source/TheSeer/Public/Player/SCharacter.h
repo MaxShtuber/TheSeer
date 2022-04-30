@@ -14,6 +14,7 @@ class UNiagaraComponent;
 
 DECLARE_DELEGATE_OneParam(FInputSwitchWorldModeSignature, WorldModes);
 DECLARE_MULTICAST_DELEGATE(FOnJournalOpenSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnJournalSetPageSignature, int);
 
 UCLASS()
 class THESEER_API ASCharacter : public ACharacter
@@ -24,6 +25,7 @@ public:
 	ASCharacter();
 
 	FOnJournalOpenSignature OnJournalOpen;
+	FOnJournalSetPageSignature OnJournalSetPage;
 
 	UPROPERTY(EditAnywhere)
 	float WalkSpeed = 300;
@@ -34,7 +36,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite)
 	AActor* Checkpoint;
 
 protected:

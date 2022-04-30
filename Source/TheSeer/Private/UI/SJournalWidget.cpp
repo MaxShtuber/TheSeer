@@ -47,6 +47,7 @@ void USJournalWidget::InitializeDelegates()
 	if (Character)
 	{
 		Character->OnJournalOpen.AddUObject(this, &USJournalWidget::OnOpenJournal);
+		Character->OnJournalSetPage.AddUObject(this, &USJournalWidget::OpenPage);
 	}
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode) return;

@@ -115,6 +115,8 @@ void ASCharacter::OnStartInteract()
 	if (HittedPageObject)
 	{
 		HittedPageObject->OnStartInteract();
+		OnOpenJournal();
+		OnJournalSetPage.Broadcast(HittedPageObject->GetPageNumber());
 		return;
 	}
 
@@ -175,7 +177,6 @@ void ASCharacter::PauseGame()
 	PlayerController->SetShowMouseCursor(true);
 	PlayerController->SetPause(true);
 	PlayerController->SetInputMode(FInputModeUIOnly::FInputModeUIOnly());
-	
 }
 
 void ASCharacter::TakeObject()

@@ -31,7 +31,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnChangeWorldModeSignature OnChangeWorldMode;
 
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnChangeWorldModeSignature OnRuneTake;
 
 	void SetWorldMode(const WorldModes& Mode);
