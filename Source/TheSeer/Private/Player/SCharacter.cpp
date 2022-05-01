@@ -63,6 +63,16 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("OpenJournal", IE_Pressed, this, &ASCharacter::OnOpenJournal);
 }
 
+void ASCharacter::EnableChangeWorld()
+{
+	bRestrictSetWorld = false;
+}
+
+void ASCharacter::DisableChangeWorld()
+{
+	bRestrictSetWorld = true;
+}
+
 void ASCharacter::MoveForward(float Amount)
 {
 	if (FMath::IsNearlyZero(Amount)) return;
@@ -77,7 +87,11 @@ void ASCharacter::MoveRight(float Amount)
 
 void ASCharacter::SetWorldMode(WorldModes Mode)
 {
-	if (!bCanSetWorld) return;
+	if (!bCanSetWorld || bRestrictSetWorld)
+	{
+		UnableToChangeWorld.Broadcast();
+		return;
+	}
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode || GameMode->GetWorldMode() == Mode) return;
 	if (!GameMode->CanWorldChange(Mode)) return;

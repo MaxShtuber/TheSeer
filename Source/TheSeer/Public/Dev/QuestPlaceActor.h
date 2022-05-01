@@ -27,7 +27,7 @@ public:
 	bool CanInteract() const { return !bIsChangeableActorPlacedInside; };
 
 	
-	UPROPERTY(BlueprintAssignable, Category="Rama Melee Weapon")
+	UPROPERTY(BlueprintAssignable)
 	FOnStartInteractSignature OnStartInteractEvent;
 
 protected:
