@@ -18,7 +18,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	USoundBase* PickUpSound;
+
+	int GetPageNumber() const
+	{
+		return PageNumber;
+	}
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pages")
 	int PageNumber = 0;
+
+
 };
