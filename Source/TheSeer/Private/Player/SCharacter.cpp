@@ -171,17 +171,33 @@ void ASCharacter::OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	const auto Actor = Cast<ABaseChangeableActor>(OtherActor);
 	if (!Actor) return;
-
-	Actor->TextComponent->SetVisibility(true);
+	if (CurrentTakenActor) return;
+	if (IsValid(ObjectToTake))
+		ObjectToTake->DisableOutline();
 	OverlapedActors.Emplace(Actor);
+	if (!OverlapedActors.IsEmpty())
+	{
+		ObjectToTake = OverlapedActors.Top();
+		ObjectToTake->EnableOutline();
+	}
 }
 
 void ASCharacter::OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	const auto Actor = Cast<ABaseChangeableActor>(OtherActor);
 	if (!Actor) return;
-	Actor->TextComponent->SetVisibility(false);
+	if (CurrentTakenActor) return;
+
+	if (IsValid(ObjectToTake))
+		ObjectToTake->DisableOutline();
+	
 	OverlapedActors.RemoveAt(OverlapedActors.Find(Actor));
+		
+	if (!OverlapedActors.IsEmpty())
+	{
+		ObjectToTake = OverlapedActors.Top();
+		ObjectToTake->EnableOutline();
+	}
 }
 
 void ASCharacter::PauseGame()
@@ -195,42 +211,54 @@ void ASCharacter::PauseGame()
 
 void ASCharacter::TakeObject()
 {
-	if (CurrentTakenActor) return;
-	FVector Location;
-	FRotator Rotation;
-	Controller->GetPlayerViewPoint(Location, Rotation);
-
-	const auto StartPoint = Location;
-	const auto Direction = Rotation.Vector();
-	const auto EndPoint = StartPoint + RangeOfTakenObject * Direction;
-	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red, false, 2.0f, 0, 3.0f);
-	FHitResult HitResult;
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-	GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility, CollisionParams);
-
-	if (!HitResult.bBlockingHit) return;
-
-	const auto HittedObject = Cast<ABaseChangeableActor>(HitResult.GetActor());
+	const auto HittedObject = ObjectToTake;
 	if (!HittedObject) return;
-
 	CurrentTakenActor = HittedObject;
-	CurrentTakenActor->DisableCurrentMeshPhysics();
-	const auto AttachmentRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
-	CurrentTakenActor->AttachToComponent(GetMesh(), AttachmentRules, AttachObjectSocketName);
+	ObjectToTake->DisableOutline();
+	InitialTakenObjectScale = CurrentTakenActor->GetActorScale3D();
+	const auto DetachmentRules = FDetachmentTransformRules::KeepWorldTransform;
+	CurrentTakenActor->DetachFromActor(DetachmentRules);
+	// CurrentTakenActor->DisableCurrentMeshPhysics();
+	// const auto AttachmentRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
+	// CurrentTakenActor->AttachToComponent(GetMesh(), AttachmentRules, AttachObjectSocketName);
 	CurrentTakenActor->SetMeshChangeable(false);
+	CurrentTakenActor->GetCurrentMesh()->SetCollisionProfileName("ChangeableObject");
+	OnObjectTake.Broadcast();
 }
 
 void ASCharacter::DropObject()
 {
 	if (!CurrentTakenActor) return;
 
+	FVector Origin, BoxExtent;
+	FVector Multiplier = InitialTakenObjectScale / CurrentTakenActor->GetActorScale3D();
+	float Offset = 100;
+	const auto StartPoint = Controller->GetPawn()->GetActorLocation() + (Offset + BoxExtent.Y * Multiplier.Y) * Controller->GetPawn()->GetActorForwardVector();;
+	const auto EndPoint = StartPoint - FVector::UpVector *  (Controller->GetCharacter()->GetDefaultHalfHeight() + 50);
+	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red, false, 2.0f, 0, 3.0f);
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility, CollisionParams);
+	if (!HitResult.bBlockingHit)
+		return;
 	const auto DetachmentRules = FDetachmentTransformRules::KeepWorldTransform;
 	CurrentTakenActor->DetachFromActor(DetachmentRules);
 	CurrentTakenActor->SetMeshChangeable(true);
-	CurrentTakenActor->EnableCurrentMeshPhysics();
-	CurrentTakenActor = nullptr;
-	
+	CurrentTakenActor->SetActorScale3D(InitialTakenObjectScale);
+	CurrentTakenActor->SetActorRotation(FVector::CrossProduct(HitResult.Normal, Controller->GetPawn()->GetActorRightVector()).Rotation());
+	CurrentTakenActor->GetActorBounds(false, Origin, BoxExtent, false);
+	CurrentTakenActor->SetActorLocation(HitResult.Location + HitResult.Normal * BoxExtent.Z);
+	const auto HittedMesh = Cast<UStaticMeshComponent>(HitResult.Component);
+	const auto IsBaseChangeableActor = Cast<ABaseChangeableActor>(HitResult.GetActor());
+	if (HittedMesh && !IsBaseChangeableActor && HittedMesh->Mobility == EComponentMobility::Movable)
+	{
+		const auto AttachmentRules = FAttachmentTransformRules::KeepWorldTransform;
+		CurrentTakenActor->AttachToComponent(HittedMesh, AttachmentRules);
+	}
+	CurrentTakenActor->GetCurrentMesh()->SetCollisionProfileName("BlockAllDynamic");
+	OnObjectDrop.Broadcast();
+	ObjectToTake->EnableOutline();
 }
 
 void ASCharacter::OnOpenJournal()

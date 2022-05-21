@@ -14,7 +14,11 @@ class THESEER_API ABaseTerrainActor : public AActor
 
 public:
 	ABaseTerrainActor();
-
+	
+	UStaticMeshComponent* GetCurrentMesh() const
+	{
+		return CurrentMesh;
+	}
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* FirstWorldMesh;
@@ -32,11 +36,7 @@ protected:
 
 	UFUNCTION()
 		virtual void ChangeCurrentMesh(WorldModes Mode);
-
-	UStaticMeshComponent* GetCurrentMesh() const
-	{
-		return CurrentMesh;
-	}
+	
 
 	TMap<WorldModes, UStaticMeshComponent*> GetMeshes() const
 	{
@@ -53,6 +53,8 @@ protected:
 private:
 	TMap <WorldModes, UStaticMeshComponent*> Meshes;
 	UStaticMeshComponent* CurrentMesh = nullptr;
+
+private:
 	bool bIsMeshChangeable = false;
 
 };

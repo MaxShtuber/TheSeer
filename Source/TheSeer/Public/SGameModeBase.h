@@ -12,7 +12,13 @@ enum class WorldModes : uint8
 	None = 0,
 	FirstWorld,
 	SecondWorld,
-	ThirdWorld
+	ThirdWorld,
+	SpiralTime,
+	BrokenTime,
+	Water,
+	Energy,
+	Defence,
+	Life
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeWorldModeSignature, WorldModes, mode);

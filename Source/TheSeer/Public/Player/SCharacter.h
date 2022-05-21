@@ -15,6 +15,8 @@ class UNiagaraComponent;
 DECLARE_DELEGATE_OneParam(FInputSwitchWorldModeSignature, WorldModes);
 DECLARE_MULTICAST_DELEGATE(FOnJournalOpenSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUnableToChangeWorldSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnObjectTake);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnObjectDrop);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnJournalSetPageSignature, int);
 
 UCLASS()
@@ -30,6 +32,11 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnUnableToChangeWorldSignature UnableToChangeWorld;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnObjectTake OnObjectTake;
+	UPROPERTY(BlueprintAssignable)
+	FOnObjectDrop OnObjectDrop;
 
 	UPROPERTY(EditAnywhere)
 	float WalkSpeed = 300;
@@ -65,18 +72,25 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Object")
 	float RangeOfTakenObject = 1000.0f;
 
+	UPROPERTY(BlueprintReadWrite)
+	ABaseChangeableActor* CurrentTakenActor = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Object")
 	FName AttachObjectSocketName = TEXT("AttachObjectSocket");
 
 	virtual void BeginPlay() override;
 	
 private:
+	FVector InitialTakenObjectScale;
 	bool bWantsToInteract = false;
 	bool bCanSetWorld = true;
 	bool bRestrictSetWorld = false;
 	TArray<ABaseChangeableActor*> OverlapedActors;
-	ABaseChangeableActor* CurrentTakenActor = nullptr;
 	FTimerHandle SetWorldTimerHandler;
+	
+	UPROPERTY()
+	ABaseChangeableActor* ObjectToTake;
+
 
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);

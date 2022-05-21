@@ -30,11 +30,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag")
 	int32 TagItem = 0;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Outline")
+	UMaterialInterface* OutlineMaterial;
+
+	void EnableOutline() const { OutlineMesh->SetVisibility(true); }
+	void DisableOutline() const { OutlineMesh->SetVisibility(false); }
+
 	void EnableCurrentMeshPhysics() const;
 	
 	void DisableCurrentMeshPhysics();
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* OutlineMesh;
 
 	UFUNCTION()
 	void DisableCurrentMeshPhysicsCallback(UPrimitiveComponent* Comp, FName BoneName)

@@ -5,6 +5,12 @@
 
 ABaseChangeableActor::ABaseChangeableActor()
 {
+	auto RootComponent_ = StaticCast<UStaticMeshComponent*>(GetRootComponent());
+	RootComponent_->SetMobility(EComponentMobility::Movable);
+	OutlineMesh = CreateDefaultSubobject<UStaticMeshComponent>("OutlineMesh");
+	OutlineMesh->SetupAttachment(GetRootComponent());
+	OutlineMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	OutlineMesh->SetVisibility(false);
 	TextComponent = CreateDefaultSubobject<UTextRenderComponent>("TextComponent");
 	TextComponent->SetupAttachment(GetRootComponent());
 }
@@ -14,10 +20,6 @@ void ABaseChangeableActor::BeginPlay()
 	Super::BeginPlay();
 	auto RootComponent_ = StaticCast<UStaticMeshComponent*>(GetRootComponent());
 	RootComponent_->SetMobility(EComponentMobility::Movable);
-	RootComponent_->BodyInstance.bGenerateWakeEvents = true;
-	RootComponent_->OnComponentSleep.AddDynamic(
-			this, &ABaseChangeableActor::ABaseChangeableActor::DisableCurrentMeshPhysicsCallback);
-	RootComponent_->SetCollisionProfileName("ChangeableObject");
 	TextComponent->SetText(ActivateDescription);
 	TextComponent->SetVisibility(false);
 }
@@ -60,7 +62,12 @@ void ABaseChangeableActor::DisableCurrentMeshPhysics()
 void ABaseChangeableActor::TurnOnMesh(UStaticMeshComponent* Mesh)
 {
 	Super::TurnOnMesh(Mesh);
-	Mesh->SetCollisionProfileName("ChangeableObject");
+	OutlineMesh->SetStaticMesh(Mesh->GetStaticMesh());
+	OutlineMesh->SetWorldScale3D(GetActorScale3D());
+	for (int index = 0; index < OutlineMesh->GetNumMaterials(); index++)
+	{
+		OutlineMesh->SetMaterial(index, OutlineMaterial);
+	};
 }
 
 void ABaseChangeableActor::TurnOffMesh(UStaticMeshComponent* Mesh)
