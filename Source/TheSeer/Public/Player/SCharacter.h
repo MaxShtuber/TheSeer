@@ -85,6 +85,8 @@ private:
 	bool bWantsToInteract = false;
 	bool bCanSetWorld = true;
 	bool bRestrictSetWorld = false;
+	
+	UPROPERTY()
 	TArray<ABaseChangeableActor*> OverlapedActors;
 	FTimerHandle SetWorldTimerHandler;
 	

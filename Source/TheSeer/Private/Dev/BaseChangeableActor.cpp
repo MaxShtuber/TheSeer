@@ -9,7 +9,6 @@ ABaseChangeableActor::ABaseChangeableActor()
 	RootComponent_->SetMobility(EComponentMobility::Movable);
 	OutlineMesh = CreateDefaultSubobject<UStaticMeshComponent>("OutlineMesh");
 	OutlineMesh->SetupAttachment(GetRootComponent());
-	OutlineMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	OutlineMesh->SetVisibility(false);
 	TextComponent = CreateDefaultSubobject<UTextRenderComponent>("TextComponent");
 	TextComponent->SetupAttachment(GetRootComponent());
@@ -73,7 +72,6 @@ void ABaseChangeableActor::TurnOnMesh(UStaticMeshComponent* Mesh)
 void ABaseChangeableActor::TurnOffMesh(UStaticMeshComponent* Mesh)
 {
 	Super::TurnOffMesh(Mesh);
-	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseChangeableActor::ChangeCurrentMesh(WorldModes Mode)

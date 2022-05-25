@@ -211,6 +211,7 @@ void ASCharacter::PauseGame()
 
 void ASCharacter::TakeObject()
 {
+	if (CurrentTakenActor) return;
 	const auto HittedObject = ObjectToTake;
 	if (!HittedObject) return;
 	CurrentTakenActor = HittedObject;
