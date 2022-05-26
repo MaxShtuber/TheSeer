@@ -16,6 +16,8 @@ DECLARE_DELEGATE_OneParam(FInputSwitchWorldModeSignature, WorldModes);
 DECLARE_MULTICAST_DELEGATE(FOnJournalOpenSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUnableToChangeWorldSignature);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnJournalSetPageSignature, int);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnObjectTake);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnObjectDrop);
 
 UCLASS()
 class THESEER_API ASCharacter : public ACharacter
@@ -30,6 +32,11 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnUnableToChangeWorldSignature UnableToChangeWorld;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnObjectTake OnObjectTake;
+	UPROPERTY(BlueprintAssignable)
+	FOnObjectDrop OnObjectDrop;
 
 	UPROPERTY(EditAnywhere)
 	float WalkSpeed = 300;
@@ -47,6 +54,9 @@ public:
 	void EnableChangeWorld();
 	UFUNCTION(BlueprintCallable)
 	void DisableChangeWorld();
+
+	UPROPERTY(BlueprintReadWrite)
+	ABaseChangeableActor* CurrentTakenActor = nullptr;
 
 protected:
 	
@@ -71,11 +81,12 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
+	FVector InitialTakenObjectScale;
 	bool bWantsToInteract = false;
 	bool bCanSetWorld = true;
 	bool bRestrictSetWorld = false;
 	TArray<ABaseChangeableActor*> OverlapedActors;
-	ABaseChangeableActor* CurrentTakenActor = nullptr;
+	
 	FTimerHandle SetWorldTimerHandler;
 
 	void MoveForward(float Amount);

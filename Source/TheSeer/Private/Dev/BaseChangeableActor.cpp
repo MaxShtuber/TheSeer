@@ -5,6 +5,8 @@
 
 ABaseChangeableActor::ABaseChangeableActor()
 {
+	auto RootComponent_ = StaticCast<UStaticMeshComponent*>(GetRootComponent());
+	RootComponent_->SetMobility(EComponentMobility::Movable);
 	TextComponent = CreateDefaultSubobject<UTextRenderComponent>("TextComponent");
 	TextComponent->SetupAttachment(GetRootComponent());
 }
@@ -17,7 +19,6 @@ void ABaseChangeableActor::BeginPlay()
 	RootComponent_->BodyInstance.bGenerateWakeEvents = true;
 	RootComponent_->OnComponentSleep.AddDynamic(
 			this, &ABaseChangeableActor::ABaseChangeableActor::DisableCurrentMeshPhysicsCallback);
-	RootComponent_->SetCollisionProfileName("ChangeableObject");
 	TextComponent->SetText(ActivateDescription);
 	TextComponent->SetVisibility(false);
 }
@@ -60,13 +61,11 @@ void ABaseChangeableActor::DisableCurrentMeshPhysics()
 void ABaseChangeableActor::TurnOnMesh(UStaticMeshComponent* Mesh)
 {
 	Super::TurnOnMesh(Mesh);
-	Mesh->SetCollisionProfileName("ChangeableObject");
 }
 
 void ABaseChangeableActor::TurnOffMesh(UStaticMeshComponent* Mesh)
 {
 	Super::TurnOffMesh(Mesh);
-	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseChangeableActor::ChangeCurrentMesh(WorldModes Mode)
