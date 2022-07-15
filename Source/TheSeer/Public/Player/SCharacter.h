@@ -14,6 +14,10 @@ class UNiagaraComponent;
 
 DECLARE_DELEGATE_OneParam(FInputSwitchWorldModeSignature, WorldModes);
 DECLARE_MULTICAST_DELEGATE(FOnJournalOpenSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUnableToChangeWorldSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnJournalSetPageSignature, int);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnObjectTake);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnObjectDrop);
 
 UCLASS()
 class THESEER_API ASCharacter : public ACharacter
@@ -24,6 +28,15 @@ public:
 	ASCharacter();
 
 	FOnJournalOpenSignature OnJournalOpen;
+	FOnJournalSetPageSignature OnJournalSetPage;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUnableToChangeWorldSignature UnableToChangeWorld;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnObjectTake OnObjectTake;
+	UPROPERTY(BlueprintAssignable)
+	FOnObjectDrop OnObjectDrop;
 
 	UPROPERTY(EditAnywhere)
 	float WalkSpeed = 300;
@@ -34,7 +47,19 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(BlueprintReadWrite)
+	AActor* Checkpoint;
+
+	UFUNCTION(BlueprintCallable)
+	void EnableChangeWorld();
+	UFUNCTION(BlueprintCallable)
+	void DisableChangeWorld();
+
+	UPROPERTY(BlueprintReadWrite)
+	ABaseChangeableActor* CurrentTakenActor = nullptr;
+
 protected:
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
 
@@ -54,12 +79,14 @@ protected:
 	FName AttachObjectSocketName = TEXT("AttachObjectSocket");
 
 	virtual void BeginPlay() override;
-
+	
 private:
+	FVector InitialTakenObjectScale;
 	bool bWantsToInteract = false;
 	bool bCanSetWorld = true;
+	bool bRestrictSetWorld = false;
 	TArray<ABaseChangeableActor*> OverlapedActors;
-	ABaseChangeableActor* CurrentTakenActor = nullptr;
+	
 	FTimerHandle SetWorldTimerHandler;
 
 	void MoveForward(float Amount);

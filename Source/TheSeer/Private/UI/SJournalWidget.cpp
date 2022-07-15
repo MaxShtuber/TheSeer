@@ -20,6 +20,10 @@ void USJournalWidget::NativeOnInitialized()
 
 void USJournalWidget::OnExit()
 {
+	if (IsValid(CloseSound))
+	{
+		PlaySound(CloseSound);
+	}
 	GetOwningPlayer()->SetPause(false);
 	SetVisibility(ESlateVisibility::Hidden);
 	GetOwningPlayer()->SetInputMode(FInputModeGameOnly::FInputModeGameOnly());
@@ -28,6 +32,10 @@ void USJournalWidget::OnExit()
 
 void USJournalWidget::OnOpenJournal()
 {
+	if (IsValid(OpenSound))
+	{
+		PlaySound(OpenSound);
+	}
 	SetVisibility(ESlateVisibility::Visible);
 }
 
@@ -39,6 +47,7 @@ void USJournalWidget::InitializeDelegates()
 	if (Character)
 	{
 		Character->OnJournalOpen.AddUObject(this, &USJournalWidget::OnOpenJournal);
+		Character->OnJournalSetPage.AddUObject(this, &USJournalWidget::OpenPage);
 	}
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode) return;
@@ -56,5 +65,9 @@ void USJournalWidget::InitializeDelegates()
 
 void USJournalWidget::OpenPage(int PageNumber)
 {
+	if (PageSounds.Num() > 0)
+	{
+		PlaySound(PageSounds[FMath::RandRange(0, PageSounds.Num() - 1)]);
+	}
 	CoreImage->SetBrushFromTexture(*PageImages.Find(PageNumber));
 }

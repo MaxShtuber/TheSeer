@@ -6,6 +6,9 @@
 #include "Dev/BaseTerrainActor.h"
 #include "QuestPlaceActor.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartInteractSignature);
+
 /**
  * 
  */
@@ -22,6 +25,10 @@ public:
 	void SetChangeableActorPlacedInside(bool NewValue);
 	void OnStartInteract();
 	bool CanInteract() const { return !bIsChangeableActorPlacedInside; };
+
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnStartInteractSignature OnStartInteractEvent;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)

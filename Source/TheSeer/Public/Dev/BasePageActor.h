@@ -15,7 +15,18 @@ class THESEER_API ABasePageActor : public ABaseTerrainActor
 	GENERATED_BODY()
 public:
 	void OnStartInteract();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
+	USoundBase* PickUpSound;
+
+	int GetPageNumber() const
+	{
+		return PageNumber;
+	}
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pages")
 	int PageNumber = 0;
+
+
 };

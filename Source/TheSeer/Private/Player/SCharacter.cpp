@@ -63,6 +63,16 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("OpenJournal", IE_Pressed, this, &ASCharacter::OnOpenJournal);
 }
 
+void ASCharacter::EnableChangeWorld()
+{
+	bRestrictSetWorld = false;
+}
+
+void ASCharacter::DisableChangeWorld()
+{
+	bRestrictSetWorld = true;
+}
+
 void ASCharacter::MoveForward(float Amount)
 {
 	if (FMath::IsNearlyZero(Amount)) return;
@@ -77,7 +87,11 @@ void ASCharacter::MoveRight(float Amount)
 
 void ASCharacter::SetWorldMode(WorldModes Mode)
 {
-	if (!bCanSetWorld) return;
+	if (!bCanSetWorld || bRestrictSetWorld)
+	{
+		UnableToChangeWorld.Broadcast();
+		return;
+	}
 	const auto GameMode = Cast<ASGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode || GameMode->GetWorldMode() == Mode) return;
 	if (!GameMode->CanWorldChange(Mode)) return;
@@ -103,7 +117,7 @@ void ASCharacter::OnStartInteract()
 	const auto StartPoint = Location;
 	const auto Direction = Rotation.Vector();
 	const auto EndPoint = StartPoint + RangeOfTakenObject * Direction;
-	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red, false, 2.0f, 0, 3.0f);
+	// DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red, false, 2.0f, 0, 3.0f);
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
@@ -115,6 +129,8 @@ void ASCharacter::OnStartInteract()
 	if (HittedPageObject)
 	{
 		HittedPageObject->OnStartInteract();
+		OnOpenJournal();
+		OnJournalSetPage.Broadcast(HittedPageObject->GetPageNumber());
 		return;
 	}
 
@@ -175,7 +191,6 @@ void ASCharacter::PauseGame()
 	PlayerController->SetShowMouseCursor(true);
 	PlayerController->SetPause(true);
 	PlayerController->SetInputMode(FInputModeUIOnly::FInputModeUIOnly());
-	
 }
 
 void ASCharacter::TakeObject()
@@ -200,22 +215,47 @@ void ASCharacter::TakeObject()
 	if (!HittedObject) return;
 
 	CurrentTakenActor = HittedObject;
+	InitialTakenObjectScale = CurrentTakenActor->GetActorScale3D();
 	CurrentTakenActor->DisableCurrentMeshPhysics();
-	const auto AttachmentRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
-	CurrentTakenActor->AttachToComponent(GetMesh(), AttachmentRules, AttachObjectSocketName);
 	CurrentTakenActor->SetMeshChangeable(false);
+	CurrentTakenActor->GetCurrentMesh()->SetCollisionProfileName("ChangeableObject");
+	OnObjectTake.Broadcast();
 }
 
 void ASCharacter::DropObject()
 {
 	if (!CurrentTakenActor) return;
 
+	FVector Origin, BoxExtent;
+	FVector Multiplier = InitialTakenObjectScale / CurrentTakenActor->GetActorScale3D();
+	float Offset = 150;
+	const auto StartPoint = Controller->GetPawn()->GetActorLocation() + (Offset + BoxExtent.Y * Multiplier.Y) * Controller->GetPawn()->GetActorForwardVector();;
+	const auto EndPoint = StartPoint - FVector::UpVector *  (Controller->GetCharacter()->GetDefaultHalfHeight() + 100);
+	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red, false, 2.0f, 0, 3.0f);
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility, CollisionParams);
+	if (!HitResult.bBlockingHit)
+		return;
+
 	const auto DetachmentRules = FDetachmentTransformRules::KeepWorldTransform;
 	CurrentTakenActor->DetachFromActor(DetachmentRules);
 	CurrentTakenActor->SetMeshChangeable(true);
-	CurrentTakenActor->EnableCurrentMeshPhysics();
-	CurrentTakenActor = nullptr;
 	
+	CurrentTakenActor->SetActorScale3D(InitialTakenObjectScale);
+	CurrentTakenActor->SetActorRotation(FVector::CrossProduct(HitResult.Normal, Controller->GetPawn()->GetActorRightVector()).Rotation());
+	CurrentTakenActor->GetActorBounds(false, Origin, BoxExtent, false);
+	CurrentTakenActor->SetActorLocation(HitResult.Location + HitResult.Normal * BoxExtent.Z);
+	const auto HittedMesh = Cast<UStaticMeshComponent>(HitResult.Component);
+	const auto IsBaseChangeableActor = Cast<ABaseChangeableActor>(HitResult.GetActor());
+	if (HittedMesh && !IsBaseChangeableActor && HittedMesh->Mobility == EComponentMobility::Movable)
+	{
+		const auto AttachmentRules = FAttachmentTransformRules::KeepWorldTransform;
+		CurrentTakenActor->AttachToComponent(HittedMesh, AttachmentRules);
+	}
+	CurrentTakenActor->GetCurrentMesh()->SetCollisionProfileName("BlockAllDynamic");
+	OnObjectDrop.Broadcast();
 }
 
 void ASCharacter::OnOpenJournal()
