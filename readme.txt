@@ -1,2 +1,2 @@
-если ты видишь этот файл
-то все получилось)
+The Seer. 
+3D adventure-quest game with first/third view. 
